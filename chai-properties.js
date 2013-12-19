@@ -21,6 +21,7 @@
 }(function(chai, utils){
   var _;
   var flag = utils.flag;
+  var inspect = utils.inspect;
 
   if (
     typeof window === 'object'
@@ -36,30 +37,66 @@
   chai.Assertion.addMethod('properties', function(expected) {
     var obj = flag(this, 'object');
 
-    if(flag(this, 'negate')) {
-      throw new Error('Not implemented yet');
+    function check(testDescr, testVal) {
+      _.each(obj, function (val, attr) {
+        if (!(attr in testVal)) {
+          throw Error();
+        }
+
+        if (typeof val !== typeof testVal[attr]) {
+          throw Error();
+        }
+
+        if (_.isArray(val)) {
+          if (_.size(val) !== _.size(testVal[attr])) {
+            throw Error();
+          }
+
+          check(val, testVal[attr]);
+        }
+
+        if (_.isObject(val)) {
+          check(val, testVal[attr]);
+          return;
+        });
+
+        if (val !== testVal[attr]) {
+          throw Error();
+        }
+      })
     }
 
     var assert = true;
     try {
       _.each(expected, function (value, key) {
-        (new chai.Assertion(obj)).property(key, value);
-      });
+        var assertion = new chai.Assertion(obj);
+
+        if (flag(this, 'negate')) {
+          return assertion.not.property(key, value);
+        }
+
+        assertion.property(key, value);
+      }, this);
     } catch (e) {
+      console.log(e)
       assert = false;
     }
 
+    if (flag(this, 'negate')) {
+      assert = !assert;
+    }
+    console.log(obj, expected, flag(this, 'negate'), diff, '>', assert)
     var diff = _.pick(obj, _.keys(expected));
-    var moreMessage = _.size(diff) ? ', but found ' + inspect(diff) : '';
 
     this.assert(
       assert
-      , 'expected #{this} to have properties #{exp}' + moreMessage
-      , 'expected #{this} to not have properties #{exp}' + moreMessage
+      , 'expected #{this} to have properties #{exp}' + (_.size(diff) ? ', but found ' + inspect(diff) : '')
+      , 'expected #{this} to not have properties #{exp}' + (_.size(diff) ? ', but found ' + inspect(diff) : '')
       , expected
       , obj
-      , true
-    )
+    );
+
+    console.log('HERE');
   });
 
   //export tdd style
