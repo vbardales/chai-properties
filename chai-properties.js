@@ -21,6 +21,7 @@
 }(function(chai, utils){
   var _;
   var flag = utils.flag;
+  var inspect = utils.inspect;
 
   if (
     typeof window === 'object'
@@ -33,39 +34,31 @@
     _ = require('lodash');
   }
 
-  // contain => _.where, check _.isEqual
-  // containOnce => contain, check size of returned array
-  // like => _.isEqual
-
   chai.Assertion.addMethod('properties', function(expected) {
     var obj = flag(this, 'object');
 
-    var msg = flag(this, 'negate') ? ' not ' : '';
-    var msgNot = flag(this, 'negate') ? '' : ' not ';
-
-    var diff = _.pick(obj, _.keys(expected));
+    if(flag(this, 'negate')) {
+      throw new Error('Not implemented yet');
+    }
 
     var assert = true;
     try {
       _.each(expected, function (value, key) {
-        var assertion = new chai.Assertion(diff);
-
-        if (flag(this, 'negate')) {
-          flag(assertion, 'negate');
-        }
-
-        assertion.property(key, value);
+        (new chai.Assertion(obj)).property(key, value);
       });
     } catch (e) {
       assert = false;
     }
 
+    var diff = _.pick(obj, _.keys(expected));
+    var moreMessage = _.size(diff) ? ', but found ' + inspect(diff) : '';
+
     this.assert(
       assert
-      , 'expected #{this} to ' + msg + 'have properties #{exp}'
-      , 'expected #{this} to ' + msgNot + 'have properties #{exp}'
+      , 'expected #{this} to have properties #{exp}' + moreMessage
+      , 'expected #{this} to not have properties #{exp}' + moreMessage
       , expected
-      , diff
+      , obj
       , true
     )
   });
