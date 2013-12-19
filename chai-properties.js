@@ -43,10 +43,12 @@
     var msg = flag(this, 'negate') ? ' not ' : '';
     var msgNot = flag(this, 'negate') ? '' : ' not ';
 
+    var diff = _.pick(obj, _.keys(expected));
+
     var assert = true;
     try {
       _.each(expected, function (value, key) {
-        var assertion = new chai.Assertion(obj);
+        var assertion = new chai.Assertion(diff);
 
         if (flag(this, 'negate')) {
           flag(assertion, 'negate');
@@ -63,7 +65,7 @@
       , 'expected #{this} to ' + msg + 'have properties #{exp}'
       , 'expected #{this} to ' + msgNot + 'have properties #{exp}'
       , expected
-      , obj
+      , diff
       , true
     )
   });
