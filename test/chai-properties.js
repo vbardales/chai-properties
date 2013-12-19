@@ -114,6 +114,73 @@
             }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(difference));
           });
         });
+
+        describe('with multi-dimension object', function () {
+          before(function() {
+            subject = {
+              a: 'a',
+              b: {
+                b1: 'b1',
+                b2: {
+                  b21: 'b21',
+                  b22: 'b22',
+                },
+                b3: {
+                  b31: 'b31',
+                  b32: 'b32',
+                },
+              },
+            };
+          });
+
+          it('passes when one right property is given', function() {
+            subject.should.have.properties({ b: { b2: { b22: 'b22' }}});
+          });
+
+          it('passes when multiple (part or all) right properties are given', function() {
+            subject.should.have.properties({ b: { b2: { b22: 'b22' }, b3: { b32: 'b32' }}});
+          });
+
+          it('fails when one false property is given', function() {
+            var difference = { b: { b2: { b22: 'x' }}};
+
+            (function(){
+              subject.should.have.properties(difference);
+            }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(difference));
+          });
+
+          it('fails when multiple (part or all) false properties are given', function() {
+            var difference = { b: { b2: { b22: 'y' }, b3: { b32: 'z' }}};
+
+            (function(){
+              subject.should.have.properties(difference);
+            }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(difference));
+          });
+
+          it('fails when at least one not existing property is given', function() {
+            var difference = { b: { b2: { b22: 'x' }}};
+
+            (function(){
+              subject.should.have.properties(difference);
+            }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(difference));
+          });
+
+          it('passes negated when no given properties exist', function() {
+            subject.should.not.have.properties({ b: { b4: 'b4' }});
+          });
+
+          it('passes negated when at least a false given property exist', function() {
+            subject.should.not.have.properties({ b: { b2: { b22: 'x' }}});
+          });
+
+          it('fails negated when all given properties exist and are right', function() {
+            var difference = { b: { b2: { b22: 'b22' }}};
+
+            (function(){
+              subject.should.not.have.properties(difference);
+            }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(difference));
+          });
+        });
       });
     });
 

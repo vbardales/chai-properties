@@ -31,19 +31,28 @@ chai.use(require('chai-properties'));
 partially compare object attributes and values
 
 ```js
-var subject = { a: 'a', b: 'b', c: 'c' };
+var subject = { a: 'a', b: 'b', c: { c1: 'c' }};
 subject.should.have.properties({ a: 'a' });
 subject.should.have.properties({ a: 'a', b: 'b' });
+subject.should.have.properties({ c: { c1: 'c' }});
 subject.should.not.have.properties({ a: 'a', z: 'z' });
 subject.should.not.have.properties({ a: '1' });
+subject.should.not.have.properties({ c: { c2: 'c' }});
+subject.should.not.have.properties({ c: { c1: 'd' }});
 
 expect(subject).to.have.properties({ a: 'a' });
 expect(subject).to.have.properties({ a: 'a', b: 'b' });
+expect(subject).to.have.properties({ c: { c1: 'c' }});
 expect(subject).to.not.have.properties({ a: 'a', z: 'z' });
 expect(subject).to.not.have.properties({ a: '1' });
+expect(subject).to.not.have.properties({ c: { c2: 'c' }});
+expect(subject).to.not.have.properties({ c: { c1: 'd' }});
 
 assert.haveProperties(subject, { a: 'a' });
 assert.haveProperties(subject, { a: 'a', b: 'b' });
+assert.haveProperties(subject, { c: { c1: 'c' }});
 assert.notHaveProperties(subject, { a: 'a', z: 'z' });
 assert.notHaveProperties(subject, { a: '1' });
+assert.notHaveProperties(subject, { c: { c2: 'c' }});
+assert.notHaveProperties(subject, { c: { c1: 'd' }});
 ```
