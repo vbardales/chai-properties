@@ -1,15 +1,12 @@
-(function(plugin){
-  if (
-    typeof require === 'function'
-    && typeof exports === 'object'
-    && typeof module === 'object'
-  ) {
+(function (plugin) {
+  'use strict';
+
+  if (typeof require === 'function' &&
+      typeof exports === 'object' &&
+      typeof module === 'object') {
     // NodeJS
     module.exports = plugin;
-  } else if (
-    typeof define === 'function'
-    && define.amd
-  ) {
+  } else if (typeof define === 'function' && define.amd) {
     // AMD
     define(function () {
       return plugin;
@@ -18,15 +15,13 @@
     // Other environment (usually <script> tag): plug in to global chai instance directly.
     chai.use(plugin);
   }
-}(function(chai, utils){
-  var _;
-  var flag = utils.flag;
-  var inspect = utils.inspect;
+}(function (chai, utils) {
+  'use strict';
 
-  if (
-    typeof window === 'object'
-    && typeof window._ == 'function'
-  ) {
+  var _;
+
+  if (typeof window === 'object' &&
+      typeof window._ === 'function') {
     // browser-side
     _ = window._;
   } else {
@@ -34,41 +29,85 @@
     _ = require('lodash');
   }
 
+  var flag = utils.flag;
+  var inspect = utils.inspect;
+
   chai.Assertion.addMethod('properties', function(expected) {
     var obj = flag(this, 'object');
 
-    if(flag(this, 'negate')) {
-      throw new Error('Not implemented yet');
+    if (flag(this, 'negate')) {
+      throw new Error('Not implemented yet.');
     }
 
-    var assert = true;
-    try {
-      _.each(expected, function (value, key) {
-        (new chai.Assertion(obj)).property(key, value);
-      });
-    } catch (e) {
-      assert = false;
+    function check(testDescr, testVal) {
+      try {
+        return _.every(testDescr, function (val, attr) {
+          if (!_.has(testVal, attr)) {
+            throw new Error('No ' + attr + ' in ' + inspect(testVal));
+          }
+
+          if (typeof val !== typeof testVal[attr]) {
+            throw new Error('Types are incompatible (' + (typeof val) + ' vs ' + (typeof testVal[attr]) + ')');
+          }
+
+          if (_.isArray(val)) {
+            if (_.size(val) !== _.size(testVal[attr])) {
+              throw new Error('Array sizes are incompatible (' + _.size(val) + ' vs ' + _.size(testVal[attr]) + ')');
+            }
+
+            return check(val, testVal[attr]);
+          }
+
+          if (_.isObject(val)) {
+            return check(val, testVal[attr]);
+          }
+
+          if (val !== testVal[attr]) {
+            throw new Error('Values are incompatible (' + inspect(val) + ' vs ' + inspect(testVal[attr]) + ')');
+          }
+
+          return true;
+        });
+      } catch (e) {
+        return false;
+      }
     }
 
-    var diff = _.pick(obj, _.keys(expected));
+    function diffFn(testDescr, testVal) {
+      return _.transform(testVal, function (result, val, key) {
+        if (!_.has(testDescr, key)) {
+          return;
+        }
+
+        if (_.isObject(val)) {
+          var innerDiff = diffFn(testDescr[key], val);
+          if (_.size(innerDiff)) {
+            result[key] = innerDiff;
+          }
+          return;
+        }
+
+        result[key] = val;
+      }, {});
+    }
+
+    //var diff = _.pick(obj, _.keys(expected));
+    var diff = diffFn(expected, obj);
     var moreMessage = _.size(diff) ? ', but found ' + inspect(diff) : '';
 
     this.assert(
-      assert
-      , 'expected #{this} to have properties #{exp}' + moreMessage
-      , 'expected #{this} to not have properties #{exp}' + moreMessage
-      , expected
-      , obj
-      , true
-    )
+      check(expected, obj),
+      'expected ' + inspect(obj) + ' to have properties ' + inspect(expected) + moreMessage,
+      'expected ' + inspect(obj) + ' to not have properties ' + inspect(expected) + moreMessage,
+      expected,
+      obj,
+      true
+    );
   });
 
   //export tdd style
   var assert = chai.assert;
   assert.haveProperties = function (val, exp, msg) {
     new chai.Assertion(val, msg).to.have.properties(exp);
-  };
-  assert.notHaveProperties = function (val, exp, msg) {
-    new chai.Assertion(val, msg).to.not.have.properties(exp);
   };
 }));

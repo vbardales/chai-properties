@@ -1,11 +1,9 @@
-(function(test) {
-  if (
-    typeof require === 'function'
-    && typeof exports === 'object'
-    && typeof module === 'object'
-  ) {
+(function (test) {
+  if (typeof require === 'function' &&
+      typeof exports === 'object' &&
+      typeof module === 'object') {
     // NodeJS
-    (function() {
+    (function () {
       var chai = require('chai');
       chai.Assertion.includeStack = true;
       test(chai, true);
@@ -20,7 +18,6 @@
   var assert = chai.assert;
 
   describe('chai-properties', function () {
-
     if (testingServer) {
       var properties = require('../chai-properties');
 
@@ -34,7 +31,7 @@
     }
 
     chai.use(function (chai, utils) {
-      inspect = utils.objDisplay;
+      inspect = utils.inspect;
 
       chai.Assertion.addMethod('fail', function (message) {
         var obj = this._obj;
@@ -45,11 +42,11 @@
           obj();
         } catch (err) {
           this.assert(
-              err instanceof chai.AssertionError
-            , 'expected #{this} to fail, but it threw ' + inspect(err));
+            err instanceof chai.AssertionError,
+            'expected #{this} to fail, but it threw ' + inspect(err));
           this.assert(
-              err.message === message
-            , 'expected #{this} to fail with ' + inspect(message) + ', but got ' + inspect(err.message));
+            err.message === message,
+            'expected #{this} to fail with ' + inspect(message) + ', but got ' + inspect(err.message));
           return;
         }
 
@@ -78,7 +75,7 @@
             var opponent = { a: '1' };
             var difference = { a: 'a' };
 
-            (function(){
+            (function () {
               subject.should.have.properties(opponent);
             }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(opponent) +
               ', but found ' + inspect(difference));
@@ -88,7 +85,7 @@
             var opponent = { a: '1', b: '2' };
             var difference = { a: 'a', b: 'b' };
 
-            (function(){
+            (function () {
               subject.should.have.properties(opponent);
             }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(opponent) +
               ', but found ' + inspect(difference));
@@ -97,7 +94,7 @@
           it('fails when at least one not existing property is given', function() {
             var opponent = { z: 'z' };
 
-            (function(){
+            (function () {
               subject.should.have.properties(opponent);
             }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(opponent));
           });
@@ -120,13 +117,84 @@
               ', but found ' + inspect(difference));
           });
         });
+
+        describe('with multi-dimension object', function () {
+          before(function () {
+            subject = {
+              a: 'a',
+              b: {
+                b1: 'b1',
+                b2: {
+                  b21: 'b21',
+                  b22: 'b22',
+                },
+                b3: {
+                  b31: 'b31',
+                  b32: 'b32',
+                },
+              },
+            };
+          });
+
+          it('passes when one right property is given', function() {
+            subject.should.have.properties({ b: { b2: { b22: 'b22' }}});
+          });
+
+          it('passes when multiple (part or all) right properties are given', function() {
+            subject.should.have.properties({ b: { b2: { b22: 'b22' }, b3: { b32: 'b32' }}});
+          });
+
+          it('fails when one false property is given', function() {
+            var opponent = { b: { b2: { b22: 'x' }}};
+            var difference = { b: { b2: { b22: 'b22' }}};
+
+            (function () {
+              subject.should.have.properties(opponent);
+            }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(opponent) +
+              ', but found ' + inspect(difference));
+          });
+
+          it('fails when multiple (part or all) false properties are given', function() {
+            var opponent = { b: { b2: { b22: 'y' }, b3: { b32: 'z' }}};
+            var difference = { b: { b2: { b22: 'b22' }, b3: { b32: 'b32' }}};
+
+            (function () {
+              subject.should.have.properties(opponent);
+            }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(opponent) +
+              ', but found ' + inspect(difference));
+          });
+
+          it('fails when at least one not existing property is given', function() {
+            var opponent = { b: { b2: { b23: 'x' }}};
+
+            (function () {
+              subject.should.have.properties(opponent);
+            }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(opponent));
+          });
+
+          it.skip('passes negated when no given properties exist', function() {
+            subject.should.not.have.properties({ b: { b4: 'b4' }});
+          });
+
+          it.skip('passes negated when at least a false given property exist', function() {
+            subject.should.not.have.properties({ b: { b2: { b22: 'x' }}});
+          });
+
+          it.skip('fails negated when all given properties exist and are right', function() {
+            var opponent = { b: { b2: { b22: 'b22' }}};
+
+            (function () {
+              subject.should.not.have.properties(opponent);
+            }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(opponent));
+          });
+        });
       });
     });
 
-    describe('tdd aliases', function() {
+    describe('tdd aliases', function () {
       var subject, objProp, objNotProp;
 
-      before(function() {
+      before(function () {
         subject = { a: 'a', b: 'b', c: 'c' };
         objProp = { a: 'a', b: 'b' };
         objNotProp = { z: 'z' };
@@ -134,12 +202,12 @@
 
       //basic integrity checks
 
-      it('.haveProperties', function() {
+      it('.haveProperties', function () {
         assert.haveProperties(subject, objProp ,'tdd');
         subject.should.have.properties(objProp, 'bdd');
       });
 
-      it.skip('.notHaveProperties', function() {
+      it.skip('.notHaveProperties', function () {
         assert.notHaveProperties(subject, objNotProp ,'tdd');
         subject.should.not.have.properties(objNotProp, 'bdd');
       });
