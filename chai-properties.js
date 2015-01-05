@@ -42,7 +42,7 @@
     function check(testDescr, testVal) {
       try {
         return _.every(testDescr, function (val, attr) {
-          if (!_.has(testVal, attr)) {
+          if (!(attr in testVal)) {
             throw new Error('No ' + attr + ' in ' + inspect(testVal));
           }
 
