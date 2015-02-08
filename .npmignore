@@ -1,0 +1,6 @@
+test/*
+.gitignore
+.npmignore
+*.tgz
+*.log
+*.tmp
