@@ -5,7 +5,7 @@
     // NodeJS
     (function () {
       var chai = require('chai');
-      chai.Assertion.includeStack = true;
+      chai.config.includeStack = true;
       test(chai, true);
     } ());
   } else {
