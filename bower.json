@@ -1,0 +1,22 @@
+{
+  "name": "chai-properties",
+  "main": "chai-properties.js",
+  "version": "1.2.0",
+  "homepage": "https://github.com/vbardales/chai-properties",
+  "description": "check partially object properties with chai",
+  "keywords": [
+    "chai",
+    "testing",
+    "properties"
+  ],
+  "dependencies": {
+    "lodash": "^3.1.0"
+  }, 
+  "license": "MIT",
+  "ignore": [
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
