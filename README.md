@@ -47,3 +47,26 @@ assert.haveProperties(subject, { a: 'a', b: 'b' });
 assert.notHaveProperties(subject, { a: 'a', z: 'z' });
 assert.notHaveProperties(subject, { a: '1' });
 ```
+
+## Difference between expectation and actual result
+
+`properties` assertion will show difference between expectation and actual result when asserion will fail.
+
+```js
+var subject = { a: 'a', b: 'b', c: 'c' };
+expect(subject).to.have.properties({ a: 'a', b: 'c' });
+```
+
+```
+AssertionError: expected { a: 'a', b: 'b', c: 'c' }
+  to have properties { a: 'a', b: 'c' }, but found { a: 'a', b: 'b' }
+
++ expected - actual
+
+ {
+   "a": "a"
+-  "b": "b"
+-  "c": "c"
++  "b": "c"
+ }
+```
