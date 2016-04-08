@@ -58,6 +58,10 @@
             return check(val, testVal[attr]);
           }
 
+          if(_.isDate(val) && _.isDate(testVal[attr])){
+            return val.getTime() === testVal[attr].getTime()
+          }
+
           if (_.isObject(val)) {
             return check(val, testVal[attr]);
           }

@@ -98,6 +98,16 @@
               subject.should.have.properties(opponent);
             }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(opponent));
           });
+          
+          
+          it('fails when property is different Date',function () {
+            var subject = {a: new Date(1984,10,12)};
+            var opponent = {a: new Date(1985,0,26)};
+
+            (function () {
+              subject.should.have.properties(opponent);
+            }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(opponent));
+          });
 
           it.skip('passes negated when all given properties not exist', function() {
             subject.should.not.have.properties({ z: 'z', y: 'y' });
