@@ -35,10 +35,6 @@
   chai.Assertion.addMethod('properties', function(expected) {
     var obj = flag(this, 'object');
 
-    if (flag(this, 'negate')) {
-      throw new Error('Not implemented yet.');
-    }
-
     function check(testDescr, testVal) {
       try {
         return _.every(testDescr, function (val, attr) {
@@ -109,5 +105,9 @@
   var assert = chai.assert;
   assert.haveProperties = function (val, exp, msg) {
     new chai.Assertion(val, msg).to.have.properties(exp);
+  };
+
+  assert.notHaveProperties = function (val, exp, msg) {
+    new chai.Assertion(val, msg).to.not.have.properties(exp);
   };
 }));
