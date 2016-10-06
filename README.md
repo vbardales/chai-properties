@@ -1,5 +1,10 @@
 # chai-properties
 
+### Intallation:
+```bash
+npm install --save chai-properties
+```
+
 Properties matcher for chai
 
 Make assertions that values have all the same attributes and values without asserting strict object equality.
