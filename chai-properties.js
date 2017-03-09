@@ -45,6 +45,13 @@
           if (typeof val !== typeof testVal[attr]) {
             throw new Error('Types are incompatible (' + (typeof val) + ' vs ' + (typeof testVal[attr]) + ')');
           }
+          
+          if (_.isFunction(val)) {
+            if (val !== testVal[attr]) {
+              throw new Error('Values are incompatible (' + inspect(val) + ' vs ' + inspect(testVal[attr]) + ')');
+            }
+            return true;
+          }
 
           if (_.isArray(val)) {
             if (_.size(val) !== _.size(testVal[attr])) {
