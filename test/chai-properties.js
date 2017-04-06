@@ -109,16 +109,16 @@
             }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(opponent));
           });
 
-          it.skip('passes negated when all given properties not exist', function() {
+          it('passes negated when all given properties not exist', function() {
             subject.should.not.have.properties({ z: 'z', y: 'y' });
           });
 
-          it.skip('passes negated when all given property are false', function() {
+          it('passes negated when all given property are false', function() {
             subject.should.not.have.properties({ a: '1', b: '2' });
           });
 
-          it.skip('fails negated when at least a given property exist and is right', function() {
-            var opponent = { a: 'a', d: 'd' };
+          it('fails negated when all given properties exist and are right', function() {
+            var opponent = { a: 'a' };
             var difference = { a: 'a' };
 
             (function () {
@@ -182,20 +182,21 @@
             }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(opponent));
           });
 
-          it.skip('passes negated when no given properties exist', function() {
+          it('passes negated when no given properties exist', function() {
             subject.should.not.have.properties({ b: { b4: 'b4' }});
           });
 
-          it.skip('passes negated when at least a false given property exist', function() {
+          it('passes negated when at least a false given property exist', function() {
             subject.should.not.have.properties({ b: { b2: { b22: 'x' }}});
           });
 
-          it.skip('fails negated when all given properties exist and are right', function() {
+          it('fails negated when all given properties exist and are right', function() {
             var opponent = { b: { b2: { b22: 'b22' }}};
+            var difference = opponent;
 
             (function () {
               subject.should.not.have.properties(opponent);
-            }).should.fail('expected ' + inspect(subject) + ' to have properties ' + inspect(opponent));
+            }).should.fail('expected ' + inspect(subject) + ' to not have properties ' + inspect(opponent) + ', but found ' + inspect(difference));
           });
         });
       });
@@ -217,7 +218,7 @@
         subject.should.have.properties(objProp, 'bdd');
       });
 
-      it.skip('.notHaveProperties', function () {
+      it('.notHaveProperties', function () {
         assert.notHaveProperties(subject, objNotProp ,'tdd');
         subject.should.not.have.properties(objNotProp, 'bdd');
       });

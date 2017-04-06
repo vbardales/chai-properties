@@ -1,4 +1,10 @@
+[![Build Status](https://travis-ci.org/CurtisHumphrey/chai-properties.svg?branch=master)](https://travis-ci.org/CurtisHumphrey/chai-properties)
 # chai-properties
+
+### Intallation:
+```bash
+npm install --save chai-properties
+```
 
 Properties matcher for chai
 
