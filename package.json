@@ -1,6 +1,6 @@
 {
   "name": "chai-properties",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "keywords": [
     "chai",
     "testing",
@@ -20,7 +20,7 @@
   "license": "MIT",
   "devDependencies": {
     "chai": ">=1 <4",
-    "mocha": "^2.1.0"
+    "mocha": "~2.1.0"
   },
   "peerDependencies": {
     "chai": ">=1 <4"
@@ -29,6 +29,6 @@
     "npm": ">= 1.2"
   },
   "dependencies": {
-    "lodash": "^3.1.0"
+    "lodash": "~3.1.0"
   }
 }
