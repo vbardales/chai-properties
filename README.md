@@ -14,7 +14,7 @@ Make assertions that values have all the same attributes and values without asse
 
 include chai properties after chai:
 
-```
+```html
 <script src="lodash.js"></script>
 <script src="chai.js"></script>
 <script src="chai-properties.js"></script>
