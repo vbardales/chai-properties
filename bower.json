@@ -1,7 +1,7 @@
 {
   "name": "chai-properties",
   "main": "chai-properties.js",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "homepage": "https://github.com/vbardales/chai-properties",
   "description": "check partially object properties with chai",
   "keywords": [
